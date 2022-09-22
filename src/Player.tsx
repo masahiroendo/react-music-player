@@ -1,5 +1,5 @@
 import { FC, useEffect, useRef, useState } from "react";
-import { styled, Typography, Paper, Stack, Box } from "@mui/material";
+import { styled, Paper, Stack, Box } from "@mui/material";
 
 import PauseIcon from "@mui/icons-material/Pause";
 import FastRewindIcon from "@mui/icons-material/FastRewind";
@@ -10,14 +10,13 @@ import SkipPreviousIcon from "@mui/icons-material/SkipPrevious";
 // #endregion ------------ ICONS ---------
 
 import { musicsList } from "./MusicsList";
-import { formatTime } from "./utils";
 import VolumeControl from "./VolumeControl";
-import PSlider from "./Pslider";
+import TimeControl from "./TimeControl";
 
-type music = {
-  title: string;
-  url: string;
-};
+// type music = {
+//   title: string;
+//   url: string;
+// };
 
 // #region -------- Styled Components -----------------------------------------
 const Div = styled("div")(({ theme }) => ({
@@ -39,11 +38,12 @@ const CustomPaper = styled(Paper)(({ theme }) => ({
 const Player: FC = () => {
   const audioRef = useRef<HTMLAudioElement>(new Audio(musicsList[0].url));
   const [currentMusic, setCurrentMusic] = useState<string>(musicsList[0].url);
+  const [index, setIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState<number>(50);
   const [mute, setMute] = useState(false);
   const [elapsedTime, setElapsedTime] = useState<number>(0);
-  const [remainingTime, setRemainingTime] = useState<number>(0);
+  const [duration, setDuration] = useState<number>(0);
 
   useEffect(() => {
     if (audioRef.current.readyState < 1) {
@@ -53,13 +53,14 @@ const Player: FC = () => {
       audioRef.current.volume = volume / 100;
     }
     if (isPlaying) {
-      setInterval(() => {
+      const interval = setInterval(() => {
         const _duration = Math.floor(audioRef.current.duration);
         const _elapsed = Math.floor(audioRef.current.currentTime);
 
-        setRemainingTime(_duration - _elapsed);
+        setDuration(_duration);
         setElapsedTime(_elapsed);
       }, 100);
+      return () => clearInterval(interval);
     }
   }, [isPlaying, /*, audioRef.current.currentTime */ volume]);
 
@@ -72,8 +73,49 @@ const Player: FC = () => {
     setIsPlaying((curState) => !curState);
   };
 
+  const toggleBackOrForward = (n: number) => {
+    audioRef.current.currentTime += n;
+  };
+
+  const toggleBackward = () => {
+    toggleBackOrForward(-10);
+  };
+
+  const toggleForward = () => {
+    toggleBackOrForward(10);
+  };
+
+  const skipNextAudio = () => {
+    if (index >= musicsList.length - 1) {
+      setIndex(0);
+      audioRef.current.src = musicsList[0].url;
+      audioRef.current.play();
+      setIsPlaying(true);
+    } else {
+      setIndex((prev) => prev + 1);
+      audioRef.current.src = musicsList[index + 1].url;
+      audioRef.current.play();
+      setIsPlaying(true);
+    }
+  };
+
+  const skipPrevAudio = () => {
+    if (index > 0) {
+      setIndex((prev) => prev - 1);
+      audioRef.current.src = musicsList[index - 1].url;
+      audioRef.current.play();
+      setIsPlaying(true);
+    }
+  };
+
   const onAudioLoaded = () => {
-    audioRef.current && setRemainingTime(Math.floor(audioRef.current.duration));
+    audioRef.current && setDuration(Math.floor(audioRef.current.duration));
+  };
+
+  const onPlaying = () => {
+    const _duration = audioRef.current.duration;
+    const _currentTime = audioRef.current.currentTime;
+    console.log(_duration, _currentTime);
   };
 
   return (
@@ -83,6 +125,8 @@ const Player: FC = () => {
         ref={audioRef}
         muted={mute}
         onLoadedMetadata={onAudioLoaded}
+        // onLoadedData={onAudioLoaded}
+        onTimeUpdate={onPlaying}
       />
       <CustomPaper>
         <Box sx={{ display: "flex", justifyContent: "space-between" }}>
@@ -112,8 +156,14 @@ const Player: FC = () => {
               alignItems: "center",
             }}
           >
-            <SkipPreviousIcon sx={{ color: "silver", "&:hover": "white" }} />
-            <FastRewindIcon sx={{ color: "silver", "&:hover": "white" }} />
+            <SkipPreviousIcon
+              sx={{ color: "silver", "&:hover": "white" }}
+              onClick={skipPrevAudio}
+            />
+            <FastRewindIcon
+              sx={{ color: "silver", "&:hover": "white" }}
+              onClick={toggleBackward}
+            />
             {isPlaying ? (
               <PauseIcon
                 fontSize="large"
@@ -127,8 +177,14 @@ const Player: FC = () => {
                 onClick={togglePlay}
               />
             )}
-            <FastForwardIcon sx={{ color: "silver", "&:hover": "white" }} />
-            <SkipNextIcon sx={{ color: "silver", "&:hover": "white" }} />
+            <FastForwardIcon
+              sx={{ color: "silver", "&:hover": "white" }}
+              onClick={toggleForward}
+            />
+            <SkipNextIcon
+              sx={{ color: "silver", "&:hover": "white" }}
+              onClick={skipNextAudio}
+            />
           </Stack>
           <Stack sx={{ display: "flex", justifyContent: "flex-end" }} />
         </Box>
@@ -137,13 +193,11 @@ const Player: FC = () => {
           spacing={1}
           sx={{ display: "flex", alignItems: "center" }}
         >
-          <Typography sx={{ color: "silver" }}>
-            {formatTime(elapsedTime)}
-          </Typography>
-          <PSlider thumbless="true" />
-          <Typography sx={{ color: "silver" }}>
-            {formatTime(remainingTime)}
-          </Typography>
+          <TimeControl
+            elapsedTime={elapsedTime}
+            duration={duration}
+            audio={audioRef.current}
+          />
         </Stack>
       </CustomPaper>
     </Div>
