@@ -15,3 +15,12 @@ export const formatTime = (time: number): string => {
 };
 
 export const iconStyle = { color: "silver", "&:hover": { color: "white" } };
+
+export const getRandomTrackIndex = (index: number, size: number): number => {
+  let randomIndex = Math.floor(Math.random() * size);
+  do {
+    randomIndex = Math.floor(Math.random() * size);
+  } while (index === randomIndex);
+
+  return randomIndex % size;
+};

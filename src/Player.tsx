@@ -1,19 +1,10 @@
 import { FC, useEffect, useRef, useState } from "react";
-import {
-  styled,
-  Paper,
-  Stack,
-  Box,
-  Card,
-  CardContent,
-  Typography,
-} from "@mui/material";
+import { styled, Paper, Stack, Box, Typography } from "@mui/material";
 
 import { musicsList } from "./MusicsList";
 import VolumeControl from "./VolumeControl";
 import TimeControl from "./TimeControl";
 import TrackControl from "./TrackControl";
-import { QrCode } from "@mui/icons-material";
 
 // // #region -------- Styled Components -----------------------------------------
 // const Div = styled("div")(({ theme }) => ({
@@ -33,8 +24,10 @@ const CustomPaper = styled(Paper)(({ theme }) => ({
 // #endregion ---------------------------------------------------------------
 
 const Player: FC = () => {
-  const audioRef = useRef<HTMLAudioElement>(new Audio(musicsList[0].url));
-  const [currentMusic, setCurrentMusic] = useState(musicsList[0]);
+  const [trackIndex, setTrackIndex] = useState(0);
+  const audioRef = useRef<HTMLAudioElement>(
+    new Audio(musicsList[trackIndex].url)
+  );
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState<number>(50);
   const [mute, setMute] = useState(false);
@@ -62,8 +55,11 @@ const Player: FC = () => {
 
   const onAudioLoaded = () => {
     audioRef.current && setDuration(Math.floor(audioRef.current.duration));
+    audioRef.current.play();
     setElapsedTime(0);
   };
+
+  const currentMusic = musicsList[trackIndex];
 
   return (
     <>
@@ -72,6 +68,9 @@ const Player: FC = () => {
         ref={audioRef}
         muted={mute}
         onLoadedMetadata={onAudioLoaded}
+        onEnded={() => {
+          setTrackIndex(trackIndex + 1);
+        }}
         // onLoadedData={onAudioLoaded}
       />
       <CustomPaper>
@@ -125,6 +124,8 @@ const Player: FC = () => {
             <TrackControl
               audio={audioRef.current}
               musics={musicsList}
+              trackIndex={trackIndex}
+              updateTrackIndex={(i: number) => setTrackIndex(i)}
               isPlaying={isPlaying}
               toggleIsPlaying={() => setIsPlaying(!isPlaying)}
               updateElapsedTime={(n: number) => setElapsedTime(n)}
