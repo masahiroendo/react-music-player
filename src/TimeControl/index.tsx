@@ -1,7 +1,7 @@
 import { FC, useState } from "react";
 import { Typography } from "@mui/material";
 
-import { formatTime } from "../utils";
+import { formatTime, iconStyle } from "../utils";
 import PSlider from "../Pslider";
 
 type TimeControlProps = {
@@ -31,6 +31,7 @@ const TimeControl: FC<TimeControlProps> = ({
         {formatTime(elapsedTime)}
       </Typography>
       <PSlider
+        sx={iconStyle}
         thumbless="true"
         value={audio.currentTime}
         max={duration}

@@ -13,3 +13,5 @@ export const formatTime = (time: number): string => {
   }
   return "00:00";
 };
+
+export const iconStyle = { color: "silver", "&:hover": { color: "white" } };

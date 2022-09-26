@@ -1,6 +1,7 @@
 import { FC } from "react";
 import PSlider from "../Pslider";
-import VolumeButton from "../VolumeButton";
+import VolumeButton from "./VolumeButton";
+import { iconStyle } from "../utils";
 
 type VolumeControlProps = {
   mute: boolean;
@@ -25,7 +26,13 @@ const VolumeControl: FC<VolumeControlProps> = ({
   return (
     <>
       <VolumeButton mute={mute} toggleMute={toggleMute} volume={volume} />
-      <PSlider min={0} max={100} value={volume} onChange={volumeChange} />
+      <PSlider
+        sx={iconStyle}
+        min={0}
+        max={100}
+        value={volume}
+        onChange={volumeChange}
+      />
     </>
   );
 };

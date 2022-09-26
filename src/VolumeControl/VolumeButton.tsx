@@ -3,6 +3,7 @@ import VolumeDownIcon from "@mui/icons-material/VolumeDown";
 import VolumeUpIcon from "@mui/icons-material/VolumeUp";
 import VolumeOffIcon from "@mui/icons-material/VolumeOff";
 import VolumeMuteIcon from "@mui/icons-material/VolumeMute";
+import { iconStyle } from "../utils";
 
 type VolumeButtonProps = {
   mute: boolean;
@@ -12,25 +13,13 @@ type VolumeButtonProps = {
 
 const VolumeButton: FC<VolumeButtonProps> = ({ mute, toggleMute, volume }) => {
   return mute ? (
-    <VolumeOffIcon
-      sx={{ color: "silver", "&:hover": "white" }}
-      onClick={toggleMute}
-    />
-  ) : volume <= 20 ? (
-    <VolumeMuteIcon
-      sx={{ color: "silver", "&:hover": "white" }}
-      onClick={toggleMute}
-    />
-  ) : volume <= 49 ? (
-    <VolumeDownIcon
-      sx={{ color: "silver", "&:hover": "white" }}
-      onClick={toggleMute}
-    />
+    <VolumeOffIcon titleAccess="mute" sx={iconStyle} onClick={toggleMute} />
+  ) : volume <= 32 ? (
+    <VolumeMuteIcon sx={iconStyle} onClick={toggleMute} />
+  ) : volume <= 65 ? (
+    <VolumeDownIcon sx={iconStyle} onClick={toggleMute} />
   ) : (
-    <VolumeUpIcon
-      sx={{ color: "silver", "&:hover": "white" }}
-      onClick={toggleMute}
-    />
+    <VolumeUpIcon sx={iconStyle} onClick={toggleMute} />
   );
 };
 
