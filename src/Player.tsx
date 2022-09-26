@@ -1,10 +1,10 @@
-import { FC, useEffect, useRef, useState } from "react";
+import { FC, useContext, useEffect, useState } from "react";
 import { styled, Paper, Stack, Box, Typography } from "@mui/material";
 
-import { musicsList } from "./MusicsList";
 import VolumeControl from "./VolumeControl";
 import TimeControl from "./TimeControl";
 import TrackControl from "./TrackControl";
+import PlayerContext from "./contexts/PlayModeContext";
 
 // // #region -------- Styled Components -----------------------------------------
 // const Div = styled("div")(({ theme }) => ({
@@ -24,21 +24,22 @@ const CustomPaper = styled(Paper)(({ theme }) => ({
 // #endregion ---------------------------------------------------------------
 
 const Player: FC = () => {
-  const [trackIndex, setTrackIndex] = useState(0);
-  const audioRef = useRef<HTMLAudioElement>(
-    new Audio(musicsList[trackIndex].url)
-  );
-  const [isPlaying, setIsPlaying] = useState(false);
+  const {
+    audioRef,
+    music,
+    isPlaying,
+    playNext,
+    updateDuration,
+    updateElapsedTime,
+  } = useContext(PlayerContext);
   const [volume, setVolume] = useState<number>(50);
   const [mute, setMute] = useState(false);
-  const [elapsedTime, setElapsedTime] = useState<number>(0);
-  const [duration, setDuration] = useState<number>(0);
 
   useEffect(() => {
     if (audioRef.current.readyState < 1) {
       return;
     }
-    if (audioRef != null) {
+    if (audioRef.current != null) {
       audioRef.current.volume = volume / 100;
     }
     if (isPlaying) {
@@ -46,31 +47,27 @@ const Player: FC = () => {
         const _duration = Math.floor(audioRef.current.duration);
         const _elapsed = Math.floor(audioRef.current.currentTime);
 
-        setDuration(_duration);
-        setElapsedTime(_elapsed);
+        updateDuration(_duration);
+        updateElapsedTime(_elapsed);
       }, 100);
       return () => clearInterval(interval);
     }
-  }, [isPlaying, /*, audioRef.current.currentTime */ volume]);
+  }, [isPlaying, volume, audioRef, updateDuration, updateElapsedTime]);
 
   const onAudioLoaded = () => {
-    audioRef.current && setDuration(Math.floor(audioRef.current.duration));
-    audioRef.current.play();
-    setElapsedTime(0);
+    audioRef.current && updateDuration(Math.floor(audioRef.current.duration));
+    audioRef.current && isPlaying && audioRef.current.play();
+    updateElapsedTime(0);
   };
-
-  const currentMusic = musicsList[trackIndex];
 
   return (
     <>
       <audio
-        src={currentMusic.url}
+        src={music.url}
         ref={audioRef}
         muted={mute}
         onLoadedMetadata={onAudioLoaded}
-        onEnded={() => {
-          setTrackIndex(trackIndex + 1);
-        }}
+        onEnded={playNext}
         // onLoadedData={onAudioLoaded}
       />
       <CustomPaper>
@@ -80,19 +77,15 @@ const Player: FC = () => {
             color: "silver",
           }}
         >
-          <Typography variant="h5">{currentMusic.title}</Typography>
-          <Typography variant="subtitle1">{currentMusic.artist}</Typography>
+          <Typography variant="h5">{music.title}</Typography>
+          <Typography variant="subtitle1">{music.artist}</Typography>
         </Stack>
         <Stack
           direction="row"
           spacing={1}
           sx={{ display: "flex", alignItems: "center" }}
         >
-          <TimeControl
-            elapsedTime={elapsedTime}
-            duration={duration}
-            audio={audioRef.current}
-          />
+          <TimeControl />
         </Stack>
         <Box sx={{ display: "flex", justifyContent: "space-between" }}>
           <Stack
@@ -121,15 +114,7 @@ const Player: FC = () => {
               alignItems: "center",
             }}
           >
-            <TrackControl
-              audio={audioRef.current}
-              musics={musicsList}
-              trackIndex={trackIndex}
-              updateTrackIndex={(i: number) => setTrackIndex(i)}
-              isPlaying={isPlaying}
-              toggleIsPlaying={() => setIsPlaying(!isPlaying)}
-              updateElapsedTime={(n: number) => setElapsedTime(n)}
-            />
+            <TrackControl />
           </Stack>
           <Stack sx={{ display: "flex", justifyContent: "flex-end" }} />
         </Box>

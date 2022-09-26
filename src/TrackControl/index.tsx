@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useContext } from "react";
 
 import PauseIcon from "@mui/icons-material/Pause";
 import FastRewindIcon from "@mui/icons-material/FastRewind";
@@ -9,48 +9,36 @@ import SkipPreviousIcon from "@mui/icons-material/SkipPrevious";
 import RepeatIcon from "@mui/icons-material/Repeat";
 import RepeatOneIcon from "@mui/icons-material/RepeatOne";
 import ShuffleIcon from "@mui/icons-material/Shuffle";
-import { getRandomTrackIndex, iconStyle } from "../utils";
+import { iconStyle } from "../utils";
+import PlayerContext from "../contexts/PlayModeContext";
 
-type music = {
-  title: string;
-  artist: string;
-  url: string;
-};
-
-type TrackControlProps = {
-  audio: HTMLAudioElement;
-  isPlaying: boolean;
-  toggleIsPlaying: () => void;
-  updateElapsedTime: (n: number) => void;
-  musics: music[];
-  trackIndex: number;
-  updateTrackIndex: (i: number) => void;
-};
-
-const TrackControl: FC<TrackControlProps> = ({
-  audio,
-  musics,
-  isPlaying,
-  toggleIsPlaying,
-  trackIndex,
-  updateTrackIndex,
-  updateElapsedTime,
-}) => {
-  const [random, setRandom] = useState(true);
-  const [repeat, setRepeat] = useState(false);
+const TrackControl: FC = () => {
+  const {
+    normalPlay,
+    isPlaying,
+    random,
+    shufflePlay,
+    audioRef,
+    repeat,
+    rePlay,
+    playNext,
+    playPrev,
+    toggleIsPlaying,
+    updateElapsedTime,
+  } = useContext(PlayerContext);
 
   const togglePlay = () => {
     if (!isPlaying) {
-      audio.play();
+      audioRef.current.play();
     } else {
-      audio.pause();
+      audioRef.current.pause();
     }
     toggleIsPlaying();
   };
 
   const toggleBackOrForward = (n: number) => {
-    audio.currentTime += n;
-    updateElapsedTime(audio.currentTime);
+    audioRef.current.currentTime += n;
+    updateElapsedTime(audioRef.current.currentTime);
   };
 
   const toggleBackward = () => {
@@ -59,54 +47,6 @@ const TrackControl: FC<TrackControlProps> = ({
 
   const toggleForward = () => {
     toggleBackOrForward(10);
-  };
-
-  const normalPlay = () => {
-    setRandom(false);
-    setRepeat(false);
-  };
-
-  const rePlay = () => {
-    setRepeat(true);
-  };
-
-  const shufflePlay = () => {
-    setRandom(true);
-  };
-
-  const skipAudio = (n: number) => {
-    updateElapsedTime(0);
-    updateTrackIndex(n);
-    audio.src = musics[n].url;
-    isPlaying && audio.play();
-  };
-
-  const skipNextAudio = () => {
-    if (random) {
-      skipAudio(getRandomTrackIndex(trackIndex, musics.length));
-      return;
-    }
-
-    if (repeat) {
-      skipAudio(trackIndex);
-      return;
-    }
-
-    skipAudio((trackIndex + 1) % musics.length);
-  };
-
-  const skipPrevAudio = () => {
-    if (random) {
-      skipAudio(getRandomTrackIndex(trackIndex, musics.length));
-      return;
-    }
-
-    if (repeat) {
-      skipAudio(trackIndex);
-      return;
-    }
-
-    skipAudio((trackIndex + musics.length - 1) % musics.length);
   };
 
   return (
@@ -145,7 +85,7 @@ const TrackControl: FC<TrackControlProps> = ({
       <SkipPreviousIcon
         titleAccess="previous song"
         sx={iconStyle}
-        onClick={skipPrevAudio}
+        onClick={playPrev}
       />
       <FastRewindIcon
         titleAccess="-10 sec"
@@ -172,11 +112,7 @@ const TrackControl: FC<TrackControlProps> = ({
         sx={iconStyle}
         onClick={toggleForward}
       />
-      <SkipNextIcon
-        titleAccess="next song"
-        sx={iconStyle}
-        onClick={skipNextAudio}
-      />
+      <SkipNextIcon titleAccess="next song" sx={iconStyle} onClick={playNext} />
     </>
   );
 };

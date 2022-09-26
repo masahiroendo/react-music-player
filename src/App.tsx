@@ -1,3 +1,5 @@
+import { PlayerContextProvider } from "./contexts/PlayModeContext";
+import { musicsList } from "./MusicsList";
 import Player from "./Player";
 
 function App() {
@@ -13,7 +15,9 @@ function App() {
         <h3>Song Title</h3>
         <h3>Artist name / Album name</h3>
       </main> */}
-      <Player />
+      <PlayerContextProvider tracks={musicsList}>
+        <Player />
+      </PlayerContextProvider>
     </>
   );
 }
