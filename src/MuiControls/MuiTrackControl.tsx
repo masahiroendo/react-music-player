@@ -27,20 +27,12 @@ const MuiTrackControl = () => {
     rePlay,
     playNext,
     playPrev,
-    toggleIsPlaying,
+    toggleList,
+    togglePlay,
     updateElapsedTime,
   } = useContext(PlayerContext);
   const theme = useTheme();
   const mainIconColor = theme.palette.mode === "light" ? "#fff" : "#000";
-
-  const togglePlay = () => {
-    if (!isPlaying) {
-      audioRef.current.play();
-    } else {
-      audioRef.current.pause();
-    }
-    toggleIsPlaying();
-  };
 
   const toggleBackOrForward = (n: number) => {
     audioRef.current.currentTime += n;
@@ -136,13 +128,23 @@ const MuiTrackControl = () => {
           htmlColor={mainIconColor}
         />
       </IconButton>
-      <IconButton aria-label="playlist" onClick={() => {}}>
+      {/* <ExpandMore
+        expand={listOpened}
+        aria-label="playlist"
+        onClick={toggleList}
+      >
+        {listOpened ? (
+          <CloseIcon fontSize="large" htmlColor={mainIconColor} />
+        ) : ( */}
+      <IconButton aria-label="playlist" onClick={toggleList}>
         <QueueMusicRoundedIcon
           titleAccess="songs list"
           fontSize="large"
           htmlColor={mainIconColor}
         />
       </IconButton>
+      {/* )}
+      </ExpandMore> */}
     </Box>
   );
 };

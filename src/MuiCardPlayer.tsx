@@ -1,12 +1,25 @@
 import { useContext, useEffect, useState } from "react";
 import { styled, useTheme } from "@mui/material/styles";
-import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
-import Stack from "@mui/material/Stack";
+import {
+  Avatar,
+  Box,
+  Collapse,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemText,
+  ListItemAvatar,
+  Stack,
+  Typography,
+  IconButton,
+} from "@mui/material";
+import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import PlayerContext from "./contexts/PlayModeContext";
 import MuiVolumeControl from "./MuiControls/MuiVolumeControl";
 import MuiTrackControl from "./MuiControls/MuiTrackControl";
 import MuiTimeSlider from "./MuiControls/MuiTimeSlider";
+
+import Wave from "./Wave";
 
 // #region -------- Styled Components -----------------------------------------
 const WallPaper = styled("div")({
@@ -75,7 +88,12 @@ export default function MuiCardPlayer() {
     music,
     audioRef,
     isPlaying,
+    listOpened,
     playNext,
+    playTrack,
+    tracks,
+    trackIndex,
+    toggleList,
     updateDuration,
     updateElapsedTime,
   } = useContext(PlayerContext);
@@ -164,6 +182,42 @@ export default function MuiCardPlayer() {
               toggleMute={() => setMute(!mute)}
             />
           </Stack>
+          <Collapse in={listOpened} timeout="auto" unmountOnExit>
+            <List>
+              <ListItem
+                secondaryAction={
+                  <IconButton onClick={toggleList}>
+                    <CloseRoundedIcon
+                      htmlColor={mainIconColor}
+                      sx={{ fontSize: "1.5rem" }}
+                    />
+                  </IconButton>
+                }
+              />
+
+              {tracks.map((track, i) => (
+                <ListItem
+                  key={track.title}
+                  disablePadding
+                  secondaryAction={isPlaying && trackIndex === i && <Wave />}
+                >
+                  <ListItemButton onClick={() => playTrack(i)}>
+                    <ListItemAvatar>
+                      <Avatar alt={track.title} src={track.image} />
+                    </ListItemAvatar>
+                    <ListItemText
+                      primary={track.title}
+                      secondary={
+                        <Typography variant="body2" width={"200px"}>
+                          {track.artist}
+                        </Typography>
+                      }
+                    />
+                  </ListItemButton>
+                </ListItem>
+              ))}
+            </List>
+          </Collapse>
         </Widget>
         <WallPaper />
       </Box>

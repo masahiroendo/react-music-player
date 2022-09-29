@@ -11,6 +11,7 @@ import { getRandomTrackIndex } from "../utils";
 
 type PlayerContextType = {
   audioRef: MutableRefObject<HTMLAudioElement>;
+  playTrack: (n: number, playing?: boolean) => void;
   music: music;
   random: boolean;
   shufflePlay: () => void;
@@ -22,7 +23,10 @@ type PlayerContextType = {
   trackIndex: number;
   tracks: music[];
   isPlaying: boolean;
+  togglePlay: () => void;
   toggleIsPlaying: () => void;
+  toggleList: () => void;
+  listOpened: boolean;
   elapsedTime: number;
   updateElapsedTime: (n: number) => void;
   duration: number;
@@ -49,17 +53,25 @@ export const PlayerContextProvider: FC<
   const [random, setRandom] = useState(false);
   const [repeat, setRepeat] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(new Audio(tracks[trackIndex].url));
+  const [listOpened, setListOpened] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [elapsedTime, setElapsedTime] = useState<number>(0);
   const [duration, setDuration] = useState<number>(0);
 
-  const skipAudio = (n: number) => {
+  const playTrack = (n: number, playing: boolean = true) => {
     setElapsedTime(0);
     setTrackIndex(n);
     audioRef.current.pause();
     audioRef.current.load();
     audioRef.current.src = tracks[n].url;
-    isPlaying && audioRef.current.play();
+    if (playing) {
+      audioRef.current.play();
+      setIsPlaying(playing);
+    }
+  };
+
+  const skipAudio = (n: number) => {
+    playTrack(n, isPlaying);
   };
 
   const changeTrack = (nextTrackIndex: number) => {
@@ -97,8 +109,21 @@ export const PlayerContextProvider: FC<
     setRepeat(true);
   };
 
+  const togglePlay = () => {
+    if (!isPlaying) {
+      audioRef.current.play();
+    } else {
+      audioRef.current.pause();
+    }
+    toggleIsPlaying();
+  };
+
   const toggleIsPlaying = () => {
     setIsPlaying(!isPlaying);
+  };
+
+  const toggleList = () => {
+    setListOpened(!listOpened);
   };
 
   const updateElapsedTime = (n: number) => {
@@ -121,10 +146,14 @@ export const PlayerContextProvider: FC<
     normalPlay,
     playNext,
     playPrev,
+    playTrack,
     trackIndex,
     tracks,
     isPlaying,
+    togglePlay,
     toggleIsPlaying,
+    toggleList,
+    listOpened,
     elapsedTime,
     updateElapsedTime,
     duration,
