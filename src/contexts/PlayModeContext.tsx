@@ -31,10 +31,11 @@ type PlayerContextType = {
 
 const PlayerContext = createContext({} as PlayerContextType);
 
-type music = {
+export type music = {
   title: string;
   artist: string;
   url: string;
+  image?: string;
 };
 
 type PlayerContextProviderProps = {

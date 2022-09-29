@@ -1,6 +1,8 @@
 import { PlayerContextProvider } from "./contexts/PlayModeContext";
 import { musicsList } from "./MusicsList";
+import CardPlayer from "./CardPlayer";
 import Player from "./Player";
+import MuiCardPlayer from "./MuiCardPlayer";
 
 function App() {
   return (
@@ -16,7 +18,9 @@ function App() {
         <h3>Artist name / Album name</h3>
       </main> */}
       <PlayerContextProvider tracks={musicsList}>
-        <Player />
+        {/* <Player /> */}
+        <MuiCardPlayer />
+        <CardPlayer />
       </PlayerContextProvider>
     </>
   );

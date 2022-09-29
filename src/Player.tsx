@@ -1,5 +1,12 @@
 import { FC, useContext, useEffect, useState } from "react";
-import { styled, Paper, Stack, Box, Typography } from "@mui/material";
+import {
+  styled,
+  Paper,
+  Stack,
+  Box,
+  Typography,
+  CardMedia,
+} from "@mui/material";
 
 import VolumeControl from "./VolumeControl";
 import TimeControl from "./TimeControl";
@@ -77,6 +84,12 @@ const Player: FC = () => {
             color: "silver",
           }}
         >
+          {/* <CardMedia
+            component="img"
+            sx={{ width: 151, borderRadius: "50%" }}
+            image={music.image}
+            alt="Live from space album cover"
+          /> */}
           <Typography variant="h5">{music.title}</Typography>
           <Typography variant="subtitle1">{music.artist}</Typography>
         </Stack>
@@ -110,7 +123,7 @@ const Player: FC = () => {
             spacing={1}
             sx={{
               display: "flex",
-              width: "40%",
+              width: "45%",
               alignItems: "center",
             }}
           >
