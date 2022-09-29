@@ -64,30 +64,32 @@ const MuiTrackControl = () => {
         mt: -1,
       }}
     >
-      <IconButton>
-        {random ? (
+      {random ? (
+        <IconButton onClick={normalPlay}>
           <ShuffleRoundedIcon
             titleAccess="random play"
             sx={{ fontSize: "2rem" }}
             htmlColor={mainIconColor}
-            onClick={normalPlay}
           />
-        ) : repeat ? (
+        </IconButton>
+      ) : repeat ? (
+        <IconButton onClick={shufflePlay}>
           <RepeatOneRoundedIcon
             titleAccess="auto replay"
             sx={{ fontSize: "2rem" }}
             htmlColor={mainIconColor}
-            onClick={shufflePlay}
           />
-        ) : (
+        </IconButton>
+      ) : (
+        <IconButton onClick={rePlay}>
           <RepeatRoundedIcon
             titleAccess="standard play"
             sx={{ fontSize: "2rem" }}
             htmlColor={mainIconColor}
-            onClick={rePlay}
           />
-        )}
-      </IconButton>
+        </IconButton>
+      )}
+
       <IconButton aria-label="previous song" onClick={playPrev}>
         <SkipPreviousRounded
           titleAccess="previous song"

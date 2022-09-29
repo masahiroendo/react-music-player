@@ -1,7 +1,7 @@
 import { useTheme } from "@mui/material/styles";
 import Slider from "@mui/material/Slider";
 import { FC } from "react";
-import { MuiVolumeLowButton, MuiVolumeHighButton } from "./MuiVolumeButton";
+import { MuiVolumeLowIcon, MuiVolumeHighICon } from "./MuiVolumeButton";
 import { IconButton } from "@mui/material";
 
 type VolumeControlProps = {
@@ -28,12 +28,8 @@ const MuiVolumeControl: FC<VolumeControlProps> = ({
 
   return (
     <>
-      <IconButton>
-        <MuiVolumeLowButton
-          mute={mute}
-          toggleMute={toggleMute}
-          volume={volume}
-        />
+      <IconButton onClick={toggleMute}>
+        <MuiVolumeLowIcon mute={mute} volume={volume} />
       </IconButton>
       <Slider
         aria-label="Volume-control"
@@ -60,15 +56,8 @@ const MuiVolumeControl: FC<VolumeControlProps> = ({
         value={volume}
         onChange={volumeChange}
       />
-      {/* <PSlider
-        sx={iconStyle}
-        min={0}
-        max={100}
-        value={volume}
-        onChange={volumeChange}
-      /> */}
       <IconButton>
-        <MuiVolumeHighButton />
+        <MuiVolumeHighICon />
       </IconButton>
     </>
   );

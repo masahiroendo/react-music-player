@@ -7,13 +7,6 @@ import PlayerContext from "./contexts/PlayModeContext";
 import MuiVolumeControl from "./MuiControls/MuiVolumeControl";
 import MuiTrackControl from "./MuiControls/MuiTrackControl";
 import MuiTimeSlider from "./MuiControls/MuiTimeSlider";
-import IconButton, { IconButtonProps } from "@mui/material/IconButton";
-import ThumbUpRoundedIcon from "@mui/icons-material/ThumbUpRounded";
-import IosShareRoundedIcon from "@mui/icons-material/IosShareRounded";
-import NotificationsRoundedIcon from "@mui/icons-material/NotificationsRounded";
-import ReplyRoundedIcon from "@mui/icons-material/ReplyRounded";
-import DownloadRoundedIcon from "@mui/icons-material/DownloadRounded";
-import LibraryAddRoundedIcon from "@mui/icons-material/LibraryAddRounded";
 
 // #region -------- Styled Components -----------------------------------------
 const WallPaper = styled("div")({
@@ -135,116 +128,29 @@ export default function MuiCardPlayer() {
         onEnded={playNext}
         // onLoadedData={onAudioLoaded}
       />
-      <Box sx={{ width: "100%", overflow: "hidden" }}>
+      <Box sx={{ width: "100%", overflow: "hidden", color: mainIconColor }}>
         <Widget>
           <Box
             sx={{
               display: "flex",
               alignItems: "center",
-              color: "light" ? "#fff" : "rgba(0,0,0,0.87)",
             }}
           >
             <CoverImage>
               <img alt={music.title} src={music.image} />
             </CoverImage>
             <Box sx={{ ml: 1.5, minWidth: 0 }}>
-              <Typography
-                variant="caption"
-                color="text.secondary"
-                fontWeight={500}
-              >
+              <Typography variant="caption" fontWeight={500}>
                 {music.artist}
               </Typography>
-              <Typography noWrap>
-                {/* <b>คนเก่าเขาทำไว้ดี (Can&apos;t win)</b> */}
-                <b>
-                  {music.title} {/*(Can&apos;t win) */}
-                </b>
-              </Typography>
+              <Typography noWrap>{music.title}</Typography>
               <Typography noWrap letterSpacing={-0.25}>
                 Album Name &mdash; Album Name
               </Typography>
             </Box>
           </Box>
           <MuiTimeSlider />
-          {/* <Slider
-          aria-label="time-indicator"
-          size="small"
-          value={position}
-          min={0}
-          step={1}
-          max={duration}
-          onChange={(_, value) => setPosition(value as number)}
-          sx={{
-            color: theme.palette.mode === "dark" ? "#fff" : "rgba(0,0,0,0.87)",
-            height: 4,
-            "& .MuiSlider-thumb": {
-              width: 8,
-              height: 8,
-              transition: "0.3s cubic-bezier(.47,1.64,.41,.8)",
-              "&:before": {
-                boxShadow: "0 2px 12px 0 rgba(0,0,0,0.4)",
-              },
-              "&:hover, &.Mui-focusVisible": {
-                boxShadow: `0px 0px 0px 8px ${
-                  theme.palette.mode === "dark"
-                    ? "rgb(255 255 255 / 16%)"
-                    : "rgb(0 0 0 / 16%)"
-                }`,
-              },
-              "&.Mui-active": {
-                width: 20,
-                height: 20,
-              },
-            },
-            "& .MuiSlider-rail": {
-              opacity: 0.28,
-            },
-          }}
-        />
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            mt: -2,
-          }}
-        >
-          <TinyText>{formatDuration(position)}</TinyText>
-          <TinyText>-{formatDuration(duration - position)}</TinyText>
-        </Box> */}
           <MuiTrackControl />
-          {/* <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            mt: -1,
-          }}
-        >
-          <IconButton aria-label="previous song">
-            <FastRewindRounded fontSize="large" htmlColor={mainIconColor} />
-          </IconButton>
-          <IconButton
-            aria-label={paused ? "play" : "pause"}
-            onClick={() => setPaused(!paused)}
-          >
-            {paused ? (
-              <PlayArrowRounded
-                sx={{ fontSize: "3rem" }}
-                htmlColor={mainIconColor}
-              />
-            ) : (
-              <PauseRounded
-                sx={{ fontSize: "3rem" }}
-                htmlColor={mainIconColor}
-              />
-            )}
-          </IconButton>
-          <IconButton aria-label="next song">
-            <FastForwardRounded fontSize="large" htmlColor={mainIconColor} />
-          </IconButton>
-        </Box> */}
           <Stack
             spacing={2}
             direction="row"
@@ -257,46 +163,7 @@ export default function MuiCardPlayer() {
               setVolume={setVolume}
               toggleMute={() => setMute(!mute)}
             />
-            {/* <VolumeDownRounded htmlColor={lightIconColor} />
-          <Slider
-            aria-label="Volume"
-            defaultValue={30}
-            sx={{
-              color:
-                theme.palette.mode === "dark" ? "#fff" : "rgba(0,0,0,0.87)",
-              "& .MuiSlider-track": {
-                border: "none",
-              },
-              "& .MuiSlider-thumb": {
-                width: 24,
-                height: 24,
-                backgroundColor: "#fff",
-                "&:before": {
-                  boxShadow: "0 4px 8px rgba(0,0,0,0.4)",
-                },
-                "&:hover, &.Mui-focusVisible, &.Mui-active": {
-                  boxShadow: "none",
-                },
-              },
-            }}
-          />
-          <VolumeUpRounded htmlColor={lightIconColor} /> */}
           </Stack>
-          <IconButton aria-label="like">
-            <ThumbUpRoundedIcon htmlColor={mainIconColor} />
-          </IconButton>
-          <IconButton aria-label="subscribe">
-            <NotificationsRoundedIcon htmlColor={mainIconColor} />
-          </IconButton>
-          <IconButton aria-label="share">
-            <ReplyRoundedIcon htmlColor={mainIconColor} />
-          </IconButton>
-          <IconButton aria-label="download">
-            <DownloadRoundedIcon htmlColor={mainIconColor} />
-          </IconButton>
-          <IconButton aria-label="add to library">
-            <LibraryAddRoundedIcon htmlColor={mainIconColor} />
-          </IconButton>
         </Widget>
         <WallPaper />
       </Box>

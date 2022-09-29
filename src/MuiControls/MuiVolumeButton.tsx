@@ -7,13 +7,11 @@ import { useTheme } from "@mui/material/styles";
 
 type MuiVolumeButtonProps = {
   mute: boolean;
-  toggleMute: () => void;
   volume: number;
 };
 
-export const MuiVolumeLowButton: FC<MuiVolumeButtonProps> = ({
+export const MuiVolumeLowIcon: FC<MuiVolumeButtonProps> = ({
   mute,
-  toggleMute,
   volume,
 }) => {
   const theme = useTheme();
@@ -23,19 +21,15 @@ export const MuiVolumeLowButton: FC<MuiVolumeButtonProps> = ({
       : "rgba(0,0,0,0.4)";
 
   return mute || volume === 0 ? (
-    <VolumeOffRoundedIcon
-      titleAccess="mute"
-      htmlColor={lightIconColor}
-      onClick={toggleMute}
-    />
+    <VolumeOffRoundedIcon titleAccess="mute" htmlColor={lightIconColor} />
   ) : volume < 32 ? (
-    <VolumeMuteRounded htmlColor={lightIconColor} onClick={toggleMute} />
+    <VolumeMuteRounded htmlColor={lightIconColor} />
   ) : (
-    <VolumeDownRounded htmlColor={lightIconColor} onClick={toggleMute} />
+    <VolumeDownRounded htmlColor={lightIconColor} />
   );
 };
 
-export const MuiVolumeHighButton = () => {
+export const MuiVolumeHighICon = () => {
   const theme = useTheme();
   const lightIconColor =
     theme.palette.mode === "light"

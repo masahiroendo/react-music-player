@@ -56,6 +56,8 @@ export const PlayerContextProvider: FC<
   const skipAudio = (n: number) => {
     setElapsedTime(0);
     setTrackIndex(n);
+    audioRef.current.pause();
+    audioRef.current.load();
     audioRef.current.src = tracks[n].url;
     isPlaying && audioRef.current.play();
   };
